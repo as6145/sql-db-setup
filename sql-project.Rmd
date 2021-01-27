@@ -16,7 +16,7 @@ library(RMySQL)
 db_user <- 'admin'
 db_password <- 'testsql!'
 db_name <- 'oudb'
-db_host <- 'PASTE YOUR ENDPOINT HERE'
+db_host <- 'database-2.cfm7cuoizny6.us-east-2.rds.amazonaws.com'
 db_port <- 3306
 
 mydb <- dbConnect(MySQL(), user = db_user, password = db_password, dbname = db_name, host = db_host, port = db_port)
@@ -55,6 +55,15 @@ dbReadTable(mydb, 'studentInfo')
 #EXERCISE 1
 #Make two toy data sets with at least three variables and at least 30 rows each in them. Have a mix of numeric and character variables. Transfer these dataframes to your SQL database using the DBI commands. Name the tables whatever you like.
 
+dbWriteTable(oudb, "Cars", Cars[1:30, ])
+dbWriteTable(oudb, "Computers", Computers[1:30, ])
+dbWriteTable(oudb, "Candy", Candy[1:30, ])
+dbReadTable(oudb, "Cars", "Computers", "Candy")
+
+dbWriteTable(oudb, "Toy1", Toy1[1:30, ])
+dbWriteTable(oudb, "Toy2", Toy2[1:30, ])
+dbWriteTable(oudb, "Toy3", Toy3[1:30, ])
+dbReadTable(oudb, "Toy1", "Toy2", "Toy3")
 ```
 
 ## Getting into SQL - READING
@@ -83,7 +92,11 @@ dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment WHERE score > 50 AND id
 #EXERCISE 2
 #Read one of your toy data tables, make sure the output is ordered in descending order, you rename one of the variables and the output is limited to the first 20 rows.
 
+dbGetQuery(oudb, "SELECT Cars ORDER BY DESC LIMIT 20;")
+
 #Read the other table according to a condition of one of the variables.
+
+dbGetQuery(oudb, "SELECT * FROM Computers")
 
 ```
 
@@ -123,6 +136,12 @@ dbGetQuery(mydb, "SELECT * FROM studentAssessment ORDER BY id_student LIMIT 10;"
 #EXERCISE 3
 #Insert a new row in one of your toy data tables leaving one variable empty. Change one value in your other table. Display your new tables. Delete the row you edited and the row you inserted. 
 
+dbGetQuery(oudb, "INSERT INTO Cars (1, 2, 3, 4, 5) VALUES ('Nissan', 'BMW', 'Audi', 'Mercedes', 'NULL');")
+
+dbGetQuery(oudb, "UPDATE Toy1 SET Toy_id_1 = '1'")
+
+dbGetQuery(oudb, "SELECT * FROM Cars")
+dbGetQuery(oudb, "SELECT * FROM Toy1")
 
 ```
 
@@ -158,6 +177,43 @@ dbGetQuery(mydb, "DROP TABLE IF EXISTS test;") #No error since it is only if it 
 
 #EXERCISE 4
 #Create a table that is exactly the same as your first toy data table but this time use SQL commands. Display your new table. Then delete the original table. 
+
+dbGetQuery(oudb,"CREATE TABLE Cars (
+  car_id_1 INTEGER, 
+  car_id_2 TEXT
+  car_id_3 TEXT
+  car_id_4 TEXT
+  car_id_5 TEXT
+  car_id_6 TEXT
+  car_id_7 TEXT
+  car_id_8 TEXT
+  car_id_9 TEXT
+  car_id_10 TEXT
+  car_id_11 TEXT
+  car_id_12 TEXT
+  car_id_13 TEXT
+  car_id_14 TEXT
+  car_id_15 TEXT
+  car_id_16 TEXT
+  car_id_17 TEXT
+  car_id_18 TEXT
+  car_id_19 TEXT
+  car_id_20 TEXT
+  car_id_21 TEXT
+  car_id_22 TEXT
+  car_id_23 TEXT
+  car_id_24 TEXT
+  car_id_25 TEXT
+  car_id_26 TEXT
+  car_id_27 TEXT
+  car_id_28 TEXT
+  car_id_29 TEXT
+  car_id_30 TEXT
+  );")
+
+dbGetQuery(mydb, "SELECT * FROM Cars;")
+dbGetQuery(mydb, "DROP TABLE Cars;")
+
 
 ```
 
@@ -212,6 +268,14 @@ dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (NULL, 'A');")
 #EXERCISE 5
 #Recreate one of your toy data tables with the constraint that for one of the integer variablesthe default value will be zero. Test your table by inserting some empty values. Display your new tables. Then delete your table.  
 
+dbGetQuery(oudb,"CREATE TABLE Cars (
+   car_id_1 INTEGER DEFAULT 0
+   );")
+dbGetQuery(oudb,"INSERT INTO Cars (car_id_1) VALUES ('1');")
+dbGetQuery(oudb, "SELECT * FROM Cars;")
+
+dbGetQuery(oudb, "DROP TABLE Cars;")
+
 ```
 
 
@@ -227,6 +291,10 @@ dbGetQuery(mydb, "ALTER TABLE studentAssessment DROP COLUMN email;")
 
 #EXERCISE 6
 #Add a column to one of your toy data tables with a default value of 3. Display your new table. Delete this column.
+
+dbGetQuery(mydb, "ALTER TABLE Cars ADD car_id_31 INTEGER DEFAULT 3")
+dbGetQuery(mydb, "ALTER TABLE Cars DROP COLUMN car_id_31;")
+
 ```
 
 
@@ -247,6 +315,13 @@ dbGetQuery(mydb, "DROP TABLE IF EXISTS test3;")
 
 #EXERCISE 7
 #Create a new table with four variables and a primary key that is a sequential id value.
+
+dbGetQuery(oudb,"CREATE TABLE NewTable (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY
+  car_id_1 INTEGER, 
+  car_id_2 TEXT
+  );")
+
 
 ```
 
@@ -278,6 +353,9 @@ dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE regio
 #EXERCISE 8
 #Query one of your original toy data tables, for two different conditions. 
 
+dbGetQuery(oudb, "SELECT car_id_1 FROM Cars WHERE car_id_1 > 0 OR car_id_2 = BMW;")
+dbGetQuery(oudb, "SELECT car_id_3 FROM Cars WHERE car_id_3 = AUDI AND car_id_2 = BMW;")
+
 ```
 
 ## Removing Duplicates
@@ -289,6 +367,8 @@ dbGetQuery(mydb, "SELECT DISTINCT region, gender FROM studentInfo;")
 #EXERCISE 9
 #Insert a duplicate row into one of your toy data tables. Then query the table without including duplicates.
 
+dbGetQuery(oudb, "INSERT car_id_4 FROM Cars;")
+dbGetQuery(oudb, "SELECT DISTINCT car_id_4 FROM Cars;")
 ```
 
 ## Conditional Expressions (non-standard)
@@ -359,6 +439,12 @@ dbGetQuery(mydb, "SELECT * FROM left_table
 
 #EXERCISE 10
 # Create a common id variable in your two toy data tables. Then join those tables so that your query returns all the values from one table and only those that match from the other. 
+
+dbGetQuery(oudb, "INSERT INTO Cars (car_id_32) VALUES ('10');")
+dbGetQuery(oudb, "INSERT INTO Toy2 (car_id_32) VALUES ('10');")
+dbGetQuery(mydb,"SELECT car_id_32 AS Cars, car_id_32 AS Toy2 
+           FROM Cars AS  
+           JOIN Toy2)
 
 ```
 ```{r}
